@@ -15,10 +15,12 @@ const HeroSection = () => {
       const scrollPosition = window.scrollY;
       const scrollThreshold = 100;
 
-      if (scrollPosition > scrollThreshold) {
-        imageElement.classList.add("scrolled");
-      } else {
-        imageElement.classList.remove("scrolled");
+      if (imageElement) {
+        if (scrollPosition > scrollThreshold) {
+          imageElement.classList.add("scrolled");
+        } else {
+          imageElement.classList.remove("scrolled");
+        }
       }
     };
 
@@ -30,7 +32,10 @@ const HeroSection = () => {
     <section className="w-full pt-36 md:pt-48 pb-10">
       <div className="space-y-6 text-center">
         <div className="space-y-6 mx-auto">
-          <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
+          <h1
+            ref={imageRef} // Attach the ref here
+            className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient"
+          >
             Your AI Career Coach for
             <br />
             Professional Success

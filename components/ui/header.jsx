@@ -1,26 +1,29 @@
-"use client";
-import { SignedOut, SignedIn, UserButton, SignInButton } from "@clerk/nextjs";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import React from "react";
+import { Button } from "./button";
 import {
-  ChevronDown,
+  PenBox,
+  LayoutDashboard,
   FileText,
   GraduationCap,
-  LayoutDashboard,
-  PenBox,
+  ChevronDown,
   StarsIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./dropdown-menu";
+  DropdownMenuLabel, // Add this import
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import Image from "next/image";
+import { checkUser } from "@/lib/inngest/checkUser";
 
-const Header = () => {
+export default async function Header() {
+  await checkUser();
+
   return (
     <header className="fixed top-0  w-full  border-b bg-background/80 backdrop-blur-md z-50 supports-[backdrop-filter]:bg-background/60">
       <nav className="w-full px-2 h-16 flex items-center justify-between">
@@ -96,7 +99,7 @@ const Header = () => {
           </SignedIn>
         </div>
       </nav>
+        
     </header>
   );
-};
-export default Header;
+}

@@ -154,52 +154,21 @@
   left: 0;
   width: 100%;
   height: 100%;
-  /* Slightly softer grid lines */
-  --grid-color: rgba(255, 255, 255, 0.14);
-  /* Lower opacity */
-  /* If using theme variables (like from previous example): */
-  /* --grid-color: color-mix(in srgb, var(--foreground) 8%, transparent); */
-
-  background:
-    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background: linear-gradient(to right,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 50px 50px;
-  /* Keep fixed size */
-  background-position: center center;
-  /* Center pattern initially */
   pointer-events: none;
   z-index: -1;
-  /* Add transitions for potential future :hover effects */
-  transition: background-position 0.4s ease-out;
 }
 
 .grid-background::before {
   content: "";
   position: absolute;
-  /* Center the gradient origin */
-  top: 50%;
-  left: 50%;
-  /* Give it a large size, centered */
-  width: 150vmax;
-  /* Use viewport units for responsiveness */
-  height: 150vmax;
-  transform: translate(-50%, -50%);
-  /* Center the element */
-
-  /* More controlled gradient fade */
-  background: radial-gradient(circle,
-      transparent 30%,
-      /* Larger transparent center */
-      rgba(0, 0, 0, 0.6) 75%
-      /* Fade to less opaque black further out */
-    );
-  /* If using theme variables: */
-  /* --gradient-color: color-mix(in srgb, var(--background) 90%, black); */
-  /* background: radial-gradient(circle, transparent 30%, var(--gradient-color) 75%); */
-
-  opacity: 0.8;
-  /* Slightly less intense overlay */
-  border-radius: 50%;
-  /* Ensure it's circular */
-  transition: opacity 0.4s ease-out;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, transparent, rgba(0, 0, 0, 0.9));
 }
