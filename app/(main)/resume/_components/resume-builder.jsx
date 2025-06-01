@@ -5,7 +5,14 @@
 import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {AlertTriangle,Download,Edit,Loader2,Monitor,Save,} from "lucide-react";
+import {
+	AlertTriangle,
+	Download,
+	Edit,
+	Loader2,
+	Monitor,
+	Save,
+} from "lucide-react";
 import { toast } from "sonner";
 import MDEditor from "@uiw/react-md-editor";
 import { Button } from "@/components/ui/button";
@@ -18,13 +25,13 @@ import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { resumeSchema } from "@/app/lib/schema";
-import { html2pdf } from "html2pdf.js";
 
 export default function ResumeBuilder({ initialContent }) {
 	const [activeTab, setActiveTab] = useState("edit");
 	const [previewContent, setPreviewContent] = useState(initialContent);
 	const { user } = useUser();
 	const [resumeMode, setResumeMode] = useState("preview");
+	const [isGenerating, setIsGenerating] = useState(false);
 
 	const {
 		control,
@@ -86,7 +93,7 @@ export default function ResumeBuilder({ initialContent }) {
 		if (contactInfo.twitter) parts.push(`🐦 [Twitter](${contactInfo.twitter})`);
 
 		return parts.length > 0
-			? `## <div align="center">${user.fullName}</div>
+			? `## <div align="center">${user?.fullName || "Your Name"}</div>
         \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
 			: "";
 	};
@@ -105,23 +112,34 @@ export default function ResumeBuilder({ initialContent }) {
 			.join("\n\n");
 	};
 
-	const [isGenerating, setIsGenerating] = useState(false);
-
 	const generatePDF = async () => {
 		setIsGenerating(true);
 		try {
+			// Dynamic import to avoid SSR issues
+			const html2pdf = (await import("html2pdf.js")).default;
+
 			const element = document.getElementById("resume-pdf");
+			if (!element) {
+				throw new Error("Resume element not found");
+			}
+
 			const opt = {
 				margin: [15, 15],
 				filename: "resume.pdf",
 				image: { type: "jpeg", quality: 0.98 },
-				html2canvas: { scale: 2 },
+				html2canvas: {
+					scale: 2,
+					useCORS: true,
+					allowTaint: true,
+				},
 				jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
 			};
 
 			await html2pdf().set(opt).from(element).save();
+			toast.success("PDF generated successfully!");
 		} catch (error) {
 			console.error("PDF generation error:", error);
+			toast.error("Failed to generate PDF. Please try again.");
 		} finally {
 			setIsGenerating(false);
 		}
@@ -382,7 +400,7 @@ export default function ResumeBuilder({ initialContent }) {
 						<div className="flex p-3 gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded mb-2">
 							<AlertTriangle className="h-5 w-5" />
 							<span className="text-sm">
-								You will lose editied markdown if you update the form data.
+								You will lose edited markdown if you update the form data.
 							</span>
 						</div>
 					)}
